@@ -23,22 +23,31 @@ Unlike standard wrappers around OpenAI, this platform runs a **self-hosted Large
 
 The system follows an asynchronous, decoupled microservices pattern to handle high-latency AI workloads without blocking the user interface.
 
+```mermaid
+graph TD
+    User([User]) -->|HTTPS| LB[Load Balancer / Ingress]
+    LB -->|/api| Backend[FastAPI Backend]
+    LB -->|/| Frontend[React Frontend]
+    
+    subgraph Kubernetes Cluster
+        Frontend
+        Backend -->|Tasks| Redis[(Redis Queue)]
+        Backend -->|Chaos| OOM[Memory Leak Trigger]
+        
+        subgraph AI Engine
+            Backend -->|Inference| Ollama[Ollama Phi-3 Model]
+        end
+    end
 
+    subgraph Monitoring Stack
+        Prometheus -->|Scrape| Backend
+        Grafana -->|Visualize| Prometheus
+    end
 
-### **Core Components:**
-1.  **Frontend (React + TypeScript):**
-    * Implements **Optimistic UI** and **Long Polling** to handle AI generation delays.
-    * Served via **Nginx**, acting as a Reverse Proxy to route API traffic.
-2.  **Backend (FastAPI + Python):**
-    * Stateless API Gateway that orchestrates tasks.
-    * Connects to the local AI Engine (Ollama) and manages state in Redis.
-3.  **Message Broker (Redis):**
-    * Decouples the request submission from the AI processing.
-    * Ensures reliable task queuing even during traffic spikes.
-4.  **AI Engine (Ollama - Phi3):**
-    * **Local LLM:** Runs entirely on the EC2 host (no external API keys).
-    * Exposed via internal network bridging to the Kubernetes cluster.
+    classDef plain fill:#fff,stroke:#333,stroke-width:2px;
+    class Backend,Frontend,Redis,Ollama plain
 
+```
 ---
 
 ## 🛠️ Tech Stack
