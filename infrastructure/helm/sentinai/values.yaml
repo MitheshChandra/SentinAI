@@ -1,0 +1,11 @@
+backend:
+  replicas: 1
+  image: kmithesh/sentinai-backend:latest
+  memoryLimit: "512Mi"
+
+frontend:
+  replicas: 1
+  image: kmithesh/sentinai-frontend:latest
+
+redis:
+  enabled: true
