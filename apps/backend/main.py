@@ -86,4 +86,4 @@ def kill_process():
             
     # Run in background so we don't block the response
     threading.Thread(target=leak_memory).start()
-    return {"status": "dying", "message": "Initiating Memory Leak sequence..."}
+    return {"status": "dying", "message": "Initiating Memory Leak sequence of 100 MB..."}
