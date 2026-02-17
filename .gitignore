@@ -1,0 +1,13 @@
+
+__pycache__/
+
+node_modules/
+
+.env
+
+*.pem
+
+.DS_Store
+
+venv/
+

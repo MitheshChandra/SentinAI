@@ -1,0 +1,43 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: backend
+spec:
+  selector:
+    app: backend
+  ports:
+    - protocol: TCP
+      port: 8000
+      targetPort: 8000
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: backend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: backend
+  template:
+    metadata:
+      labels:
+        app: backend
+    spec:
+      containers:
+      - name: backend
+        # MAKE SURE THIS MATCHES YOUR 'k3s ctr images list' OUTPUT
+        image: sentinai-platform-backend:latest 
+        imagePullPolicy: Never
+        ports:
+        - containerPort: 8000
+        env:
+        - name: REDIS_HOST
+          value: "redis" # Kubernetes DNS resolves this automatically
+        resources:
+          requests:
+            memory: "64Mi"  # Guarantee 64MB RAM
+            cpu: "250m"     # Guarantee 0.25 CPU Core
+          limits:
+            memory: "512Mi" # Kill pod if it exceeds 512MB (Trap C protection!)
+            cpu: "500m"
