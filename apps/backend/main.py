@@ -71,3 +71,19 @@ def get_task_status(task_id: str):
             # In a real app, we might mark as FAILED or retry
     
     return task_dict
+# --- CHAOS ENGINEERING ENDPOINT ---
+import threading
+
+@app.get("/kill")
+def kill_process():
+    """Simulates a Fatal Memory Leak (Chaos Engineering)"""
+    def leak_memory():
+        bloat = []
+        while True:
+            # Append 100MB of junk data repeatedly
+            bloat.append(" " * 10**8)
+            time.sleep(1)
+            
+    # Run in background so we don't block the response
+    threading.Thread(target=leak_memory).start()
+    return {"status": "dying", "message": "Initiating Memory Leak sequence..."}
