@@ -27,8 +27,8 @@ spec:
       containers:
       - name: backend
         # MAKE SURE THIS MATCHES YOUR 'k3s ctr images list' OUTPUT
-        image: sentinai-platform-backend:latest 
-        imagePullPolicy: Never
+        image: kmithesh/sentinai-backend:latest 
+        imagePullPolicy: Always
         ports:
         - containerPort: 8000
         env:
